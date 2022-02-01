@@ -40,14 +40,14 @@ export default function Header({
   return (
     <header>
       <div>
-        <h1>Click a tile to play it</h1>
+        <h1>AdCalls Soundboard</h1>
       </div>
       {selectedFile.source && (
-        <div>
-          <h2>{selectedFile.name}</h2>
+        <div className="player">
+          <span>{selectedFile.name}</span>
           {currentTime &&
             duration &&
-            `${formatTime(currentTime)} / ${formatTime(duration)}`}
+            <span>{formatTime(currentTime)} / {formatTime(duration)}</span>}
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -64,7 +64,9 @@ export default function Header({
                 }
               }
             }}
-          />
+          >
+            {audioRef.current && audioRef.current.paused ? 'Play' : 'Pause'}
+          </button>
           <audio
             ref={audioRef}
             onLoadedMetadata={() => {

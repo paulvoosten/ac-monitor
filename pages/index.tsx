@@ -30,7 +30,7 @@ const Board: NextPage = ({
             className={styles.card}
             onClick={() => setSelectedFile(file)}
           >
-            <h2>{file.name}</h2>
+            {file.name}
           </div>
         ))}
       </div>
