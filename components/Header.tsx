@@ -8,8 +8,10 @@ function formatTime(timeInSec: number) {
 
 // TODO: add volume management + styling
 export default function Header({
+  playRandomFile,
   selectedFile,
 }: {
+  playRandomFile: () => void;
   selectedFile: { name?: string; source?: string; type?: string };
 }) {
   const audioRef: LegacyRef<HTMLAudioElement> = useRef(null);
@@ -45,9 +47,11 @@ export default function Header({
       {selectedFile.source && (
         <div className="player">
           <span>{selectedFile.name}</span>
-          {currentTime &&
-            duration &&
-            <span>{formatTime(currentTime)} / {formatTime(duration)}</span>}
+          {currentTime && duration && (
+            <span>
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
+          )}
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -66,6 +70,15 @@ export default function Header({
             }}
           >
             {audioRef.current && audioRef.current.paused ? 'Play' : 'Pause'}
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              playRandomFile();
+            }}
+          >
+            Random
           </button>
           <audio
             ref={audioRef}

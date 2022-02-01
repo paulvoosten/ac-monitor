@@ -21,7 +21,16 @@ const Board: NextPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header selectedFile={selectedFile} />
+      <Header
+        playRandomFile={() => {
+          let file = files[Math.floor(Math.random() * files.length)];
+          while (file === selectedFile) {
+            file = files[Math.floor(Math.random() * files.length)];
+          }
+          setSelectedFile(file);
+        }}
+        selectedFile={selectedFile}
+      />
 
       <div className={styles.grid}>
         {files.map((file, index) => (
