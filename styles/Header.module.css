@@ -1,0 +1,44 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  color: white;
+}
+
+.button {
+  height: 30px;
+  border: 0;
+  background: #1c2933;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.button:hover {
+  color: #425f75;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.title .button {
+  margin-left: 20px;
+}
+
+.player {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.player span {
+  font-size: 20px;
+}
+
+.player span:not(:last-child),
+.button:not(:last-child) {
+  margin-right: 20px;
+}

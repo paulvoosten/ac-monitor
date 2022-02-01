@@ -1,4 +1,5 @@
 import { LegacyRef, useCallback, useEffect, useRef, useState } from 'react';
+import styles from '../styles/Header.module.css';
 
 function formatTime(timeInSec: number) {
   const minutes = Math.floor(timeInSec / 60);
@@ -6,7 +7,6 @@ function formatTime(timeInSec: number) {
   return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
 }
 
-// TODO: add volume management + styling
 export default function Header({
   playRandomFile,
   selectedFile,
@@ -40,12 +40,22 @@ export default function Header({
   }, [selectedFile, whilePlaying]);
 
   return (
-    <header>
-      <div>
+    <header className={styles.header}>
+      <div className={styles.title}>
         <h1>AdCalls Soundboard</h1>
+        <button
+          className={styles.button}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            playRandomFile();
+          }}
+        >
+          Random
+        </button>
       </div>
       {selectedFile.source && (
-        <div className="player">
+        <div className={styles.player}>
           <span>{selectedFile.name}</span>
           {currentTime && duration && (
             <span>
@@ -53,6 +63,7 @@ export default function Header({
             </span>
           )}
           <button
+            className={styles.button}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -70,15 +81,6 @@ export default function Header({
             }}
           >
             {audioRef.current && audioRef.current.paused ? 'Play' : 'Pause'}
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              playRandomFile();
-            }}
-          >
-            Random
           </button>
           <audio
             ref={audioRef}
