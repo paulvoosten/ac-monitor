@@ -37,7 +37,11 @@ const Board: NextPage = ({
           <div
             key={index}
             className={styles.card}
-            onClick={() => setSelectedFile(file)}
+            onClick={() => {
+                //TODO make this hacky shit nicer
+                setSelectedFile({name: '', source: '', type: ''});
+                setTimeout(() => setSelectedFile(file), 1);
+            }}
           >
             {file.name}
           </div>
