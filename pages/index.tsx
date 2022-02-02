@@ -16,7 +16,7 @@ const Board: NextPage = ({
   return (
     <div className={styles.container}>
       <Head>
-        <title>Wat heb je?</title>
+        <title>Soundboard</title>
         <meta name="description" content="Allemaal mooie dingen" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

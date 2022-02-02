@@ -1,9 +1,20 @@
 .header {
   display: flex;
-  flex-direction: column;
   align-items: center;
   align-content: center;
   color: white;
+  justify-content: space-between;
+  padding: 0 30px;
+}
+
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .player {
+    margin-bottom: 15px;
+  }
 }
 
 .button {
@@ -31,7 +42,6 @@
 
 .player {
   display: flex;
-  margin-bottom: 15px;
 }
 
 .player span {

@@ -1,12 +1,8 @@
 .container {
-  width: 100vw;
-  height: 100vh;
   padding: 0;
 }
 
 .main {
-  width: 100vw;
-  height: 100vh;
   padding: 0;
   flex: 1;
   display: flex;
@@ -16,23 +12,25 @@
 }
 
 .grid {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  /* max-width: 900px; */
+  display: grid !important;
+  grid-gap: 10px;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  padding: 0 10px 10px 10px
 }
 
 .card {
-  margin: 4px;
   padding: 10px;
-  text-align: left;
   color: white;
   text-decoration: none;
-  border-radius: 10px;
-  transition: color 300ms ease, border-color 300ms ease;
+  border-radius: 3px;
+  transition: 300ms ease;
   background: #1C2933;
   cursor: pointer;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card:hover,
