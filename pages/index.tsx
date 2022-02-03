@@ -3,15 +3,33 @@ import fs from 'fs';
 import Head from 'next/head';
 import styles from '../styles/Memes.module.css';
 import getPath from '../helpers/file';
-import { useState } from 'react';
-import Header from '../components/Header';
+import { LegacyRef, useEffect, useRef, useState } from 'react';
 
 const Board: NextPage = ({
   files,
 }: {
   files: Array<{ name: string; source: string; type: string }>;
 }) => {
+  const audioRef: LegacyRef<HTMLAudioElement> = useRef(null);
+  const [replay, setReplay] = useState(false);
   const [selectedFile, setSelectedFile] = useState({});
+  useEffect(() => {
+    if (replay) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.load();
+        audioRef.current.play();
+      }
+      setReplay(false);
+    }
+  }, [replay]);
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.load();
+      audioRef.current.play();
+    }
+  }, [selectedFile]);
 
   return (
     <div className={styles.container}>
@@ -21,16 +39,31 @@ const Board: NextPage = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header
-        playRandomFile={() => {
-          let file = files[Math.floor(Math.random() * files.length)];
-          while (file === selectedFile) {
-            file = files[Math.floor(Math.random() * files.length)];
-          }
-          setSelectedFile(file);
-        }}
-        selectedFile={selectedFile}
-      />
+      <header className={styles.header}>
+        <div className={styles.title}>
+          <h1>AdCalls Soundboard</h1>
+          <button
+            className={styles.button}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              let file = files[Math.floor(Math.random() * files.length)];
+              while (file === selectedFile) {
+                file = files[Math.floor(Math.random() * files.length)];
+              }
+              setSelectedFile(file);
+            }}
+          >
+            Random
+          </button>
+        </div>
+        {selectedFile.source && (
+          <audio ref={audioRef}>
+            <source src={selectedFile.source} type={selectedFile.type} />
+            Your browser does not support the audio element.
+          </audio>
+        )}
+      </header>
 
       <div className={styles.grid}>
         {files.map((file, index) => (
@@ -38,9 +71,11 @@ const Board: NextPage = ({
             key={index}
             className={styles.card}
             onClick={() => {
-                //TODO make this hacky shit nicer
-                setSelectedFile({name: '', source: '', type: ''});
-                setTimeout(() => setSelectedFile(file), 1);
+              if (file === selectedFile) {
+                setReplay(true);
+              } else {
+                setSelectedFile(file);
+              }
             }}
           >
             {file.name}

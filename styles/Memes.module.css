@@ -16,7 +16,7 @@
   grid-gap: 10px;
   grid-auto-flow: dense;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  padding: 0 10px 10px 10px
+  padding: 0 10px 10px 10px;
 }
 
 .card {
@@ -25,7 +25,7 @@
   text-decoration: none;
   border-radius: 3px;
   transition: 300ms ease;
-  background: #1C2933;
+  background: #1c2933;
   cursor: pointer;
   align-items: center;
   white-space: nowrap;
@@ -36,7 +36,7 @@
 .card:hover,
 .card:focus,
 .card:active {
-  color: #425F75;
+  color: #425f75;
 }
 
 .card h2 {
@@ -49,4 +49,59 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  color: white;
+  justify-content: space-between;
+  padding: 0 30px;
+}
+
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .player {
+    margin-bottom: 15px;
+  }
+}
+
+.button {
+  height: 30px;
+  border: 0;
+  background: #1c2933;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.button:hover {
+  color: #425f75;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.title .button {
+  margin-left: 20px;
+}
+
+.player {
+  display: flex;
+}
+
+.player span {
+  font-size: 20px;
+}
+
+.player span:not(:last-child),
+.button:not(:last-child) {
+  margin-right: 20px;
 }
