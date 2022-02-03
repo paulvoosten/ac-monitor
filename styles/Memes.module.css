@@ -79,6 +79,12 @@
   cursor: pointer;
 }
 
+.button:disabled {
+  cursor: not-allowed;
+  background: white;
+  color: #1c2933;
+}
+
 .button:hover {
   color: #425f75;
 }

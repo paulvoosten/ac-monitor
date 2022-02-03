@@ -38,11 +38,25 @@ const Board: NextPage = ({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              const file = files[Math.floor(Math.random() * files.length)];
-              setQueue([...queue, file]);
+              setQueue([
+                ...queue,
+                files[Math.floor(Math.random() * files.length)],
+              ]);
             }}
           >
             Random
+          </button>
+          <button
+            className={styles.button}
+            disabled={!audioRef.current || queue.length === 0}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              audioRef.current?.pause();
+              setQueue(queue.slice(1));
+            }}
+          >
+            Next
           </button>
         </div>
         {queue.length > 0 && (
