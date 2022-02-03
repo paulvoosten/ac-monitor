@@ -3,7 +3,7 @@ import fs from 'fs';
 import Head from 'next/head';
 import styles from '../styles/Memes.module.css';
 import getPath from '../helpers/file';
-import { LegacyRef, useEffect, useRef, useState } from 'react';
+import { LegacyRef, useCallback, useEffect, useRef, useState } from 'react';
 
 const Board: NextPage = ({
   files,
@@ -11,25 +11,16 @@ const Board: NextPage = ({
   files: Array<{ name: string; source: string; type: string }>;
 }) => {
   const audioRef: LegacyRef<HTMLAudioElement> = useRef(null);
-  const [replay, setReplay] = useState(false);
-  const [selectedFile, setSelectedFile] = useState({});
+  const [queue, setQueue] = useState<
+    Array<{ name: string; source: string; type: string }>
+  >([]);
   useEffect(() => {
-    if (replay) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.load();
-        audioRef.current.play();
-      }
-      setReplay(false);
-    }
-  }, [replay]);
-  useEffect(() => {
-    if (audioRef.current) {
+    if (queue.length > 0 && audioRef.current && audioRef.current.paused) {
       audioRef.current.pause();
       audioRef.current.load();
       audioRef.current.play();
     }
-  }, [selectedFile]);
+  }, [queue]);
 
   return (
     <div className={styles.container}>
@@ -47,19 +38,16 @@ const Board: NextPage = ({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              let file = files[Math.floor(Math.random() * files.length)];
-              while (file === selectedFile) {
-                file = files[Math.floor(Math.random() * files.length)];
-              }
-              setSelectedFile(file);
+              const file = files[Math.floor(Math.random() * files.length)];
+              setQueue([...queue, file]);
             }}
           >
             Random
           </button>
         </div>
-        {selectedFile.source && (
-          <audio ref={audioRef}>
-            <source src={selectedFile.source} type={selectedFile.type} />
+        {queue.length > 0 && (
+          <audio ref={audioRef} onEnded={() => setQueue(queue.slice(1))}>
+            <source src={queue[0].source} type={queue[0].type} />
             Your browser does not support the audio element.
           </audio>
         )}
@@ -71,11 +59,7 @@ const Board: NextPage = ({
             key={index}
             className={styles.card}
             onClick={() => {
-              if (file === selectedFile) {
-                setReplay(true);
-              } else {
-                setSelectedFile(file);
-              }
+              setQueue([...queue, file]);
             }}
           >
             {file.name}
