@@ -279,8 +279,8 @@ const Spotify: NextPage = () => {
                     <Image
                       alt={track.name}
                       src={track.image}
-                      width={250}
-                      height={250}
+                      width={isCurrent ? 84 : 50}
+                      height={isCurrent ? 84 : 50}
                     />
                     {isCurrent && (
                       <FontAwesomeIcon
@@ -288,18 +288,17 @@ const Spotify: NextPage = () => {
                         onClick={() =>
                           paused ? player.resume() : player.pause()
                         }
+                        width={50}
+                        height={50}
                       />
                     )}
                   </div>
                   <div className={styles.info}>
-                    <div>
-                      <div className={styles.name}>{track.name}</div>
-                      <div className={styles.artist}>{track.artist}</div>
-                    </div>
+                    <div className={styles.name}>{track.name}<div className={styles.artist}>{track.artist}</div></div>
                     {isCurrent && (
-                      <>
-                        <div className={styles.time}>
-                          {formatTime(position)} / {formatTime(track.duration)}
+                      <div className={styles.progressWrapper}>
+                        <div className={`${styles.time} ${styles.pre}`}>
+                          {formatTime(position)}
                         </div>
                         <div className={styles.progressBar}>
                           <div
@@ -309,7 +308,10 @@ const Spotify: NextPage = () => {
                             className={styles.progress}
                           />
                         </div>
-                      </>
+                          <div className={`${styles.time} ${styles.post}`}>
+                            {formatTime(track.duration)}
+                          </div>
+                      </div>
                     )}
                   </div>
                 </div>
