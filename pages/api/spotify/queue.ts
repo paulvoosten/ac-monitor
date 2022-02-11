@@ -3,7 +3,7 @@ import { getToken } from 'next-auth/jwt';
 import Track from '../../../interfaces/Track';
 
 const secret: string = process.env.NEXTAUTH_SECRET;
-const homoMusicId = '1128627181';
+const homoMusicId = ['1128627181'];
 
 export default async function handler(
   req: NextApiRequest,
@@ -67,7 +67,7 @@ function formatTrack(track: { added_by: { id: string }; track: Track }) {
     artist: track.track.artists?.[0].name,
     duration: track.track.duration_ms,
     image: track.track.album.images[0].url,
-    isHomoMusic: track.added_by.id === homoMusicId,
+    isHomoMusic: homoMusicId.includes(track.added_by.id),
     name: track.track.name,
     state: 'queued',
     uri: track.track.uri,
