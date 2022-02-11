@@ -36,10 +36,11 @@ const Spotify: NextPage = () => {
     '/api/spotify/queue?playlist=6cdEgnaFIU4dIPGeB4bM5v',
     (url: string) =>
       fetch(url)
-        .then((response) =>
-          response.json().then((playlist) => shuffle(playlist))
-        )
-        .then((playlist) => shuffle(playlist)),
+        .then((response) => response.json())
+        .then((playlist) => {
+          playlist.tracks = shuffle(playlist.tracks);
+          return playlist;
+        }),
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
