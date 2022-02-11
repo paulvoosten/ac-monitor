@@ -10,8 +10,14 @@
 
 .track {
   display: flex;
-  margin: 10px;
+  margin: 6px;
+  background: #1c2933;
+  border-radius: 10px;
+  color: white;
+  align-items: center;
+  padding: 8px 20px;
 }
+
 
 .track.current .image:hover img {
   opacity: 0.5;
@@ -20,13 +26,13 @@
 .track.current svg {
   position: absolute;
   cursor: pointer;
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   opacity: 0;
   z-index: 10;
   top: 50%;
   left: 50%;
-  margin: -50px 0 0 -50px;
+  margin: -25px 0 0 -25px;
 }
 
 .track.current .image:hover svg {
@@ -35,28 +41,57 @@
 
 .track .image {
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .track .info {
   width: 100%;
-  padding-left: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-content: space-between;
+  padding-left: 20px;
 }
 
 .track .name {
-  font-size: 40px;
+  font-size: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.track .artist {
+  color: #aaa
 }
 
 .track .progressBar {
   width: 100%;
-  height: 50px;
-  background: #000;
+  height: 20px;
+  background: #1c2933;
+  border: 3px solid #425f75;;
+  border-radius: 7px;
+  margin-top: 3px;
 }
 
 .track .progressBar .progress {
   height: 100%;
-  background: #fff;
+  background: #425f75;
+}
+
+.track .progressWrapper {
+  color: #aaa;
+  font-size: 20px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.track .progressWrapper .time{
+  width: 60px;
+}
+
+.track .progressWrapper .time.pre{
+  text-align: left;
+}
+
+.track .progressWrapper .time.post{
+  text-align: right;
 }
