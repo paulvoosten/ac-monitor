@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import Track from '../../../interfaces/Track';
+import WebPlaylist from '../../../interfaces/WebPlaylist';
+import WebTrack from '../../../interfaces/WebTrack';
 
 const secret: string = process.env.NEXTAUTH_SECRET;
 const homoMusicId = ['1128627181'];
@@ -12,8 +13,8 @@ export default async function handler(
   const token = await getToken({ req, secret });
   if (!token) {
     return res.status(401);
-  } else if (!req.query.playlist) {
-    res.status(400).json({ error: 'Missing `playlist` query parameter.' });
+  } else if (!req.query.playlist || typeof req.query.playlist !== 'string') {
+    res.status(400).json({ error: 'Invalid `playlist` query parameter.' });
     return;
   }
 
@@ -29,16 +30,17 @@ async function getPlaylist(token: string, playlistId: string) {
       },
     }
   );
-  const playlist = await response.json();
+  const playlist: WebPlaylist = await response.json();
   if (!response.ok) {
-    throw new Error('Failed to fetch playlist tracks');
+    throw new Error('Failed to fetch playlist');
   }
-  let tracks: object[] = playlist.tracks.items;
+  let tracks = playlist.tracks.items;
   if (playlist.tracks.next) {
     tracks = tracks.concat(await getTracks(token, playlist.tracks.next));
   }
   return {
-    img: playlist.images[0],
+    image: playlist.images[0].url,
+    position: 0,
     tracks: tracks.map(formatTrack),
     uri: playlist.uri,
   };
@@ -54,14 +56,14 @@ async function getTracks(token: string, url: string) {
   if (!response.ok) {
     throw new Error('Failed to fetch tracks');
   }
-  let tracks: object[] = body.items;
+  let tracks: WebTrack[] = body.items;
   if (body.next) {
     tracks = tracks.concat(await getTracks(token, body.next));
   }
   return tracks;
 }
 
-function formatTrack(track: { added_by: { id: string }; track: Track }) {
+function formatTrack(track: WebTrack) {
   return {
     album: track.track.album.name,
     artist: track.track.artists?.[0].name,

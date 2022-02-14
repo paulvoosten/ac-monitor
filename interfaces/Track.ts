@@ -1,18 +1,10 @@
 export default interface Track {
-  album: {
-    images: Array<{ height: number; url: string; width: number }>;
-    name: string;
-    uri: string;
-  };
-  artists: Array<{ name: string; uri: string }>;
-  duration_ms: number;
-  id: string;
-  is_playable: boolean;
-  linked_from: { id?: string; uri?: string };
-  media_type: string;
+  album: string;
+  artist: string;
+  duration: number;
+  image: string;
+  isHomoMusic: boolean;
   name: string;
-  track_type: string;
-  type: string;
-  uid: string;
+  state: 'played' | 'playing' | 'queued';
   uri: string;
 }

@@ -4,6 +4,10 @@
   overflow: hidden;
 }
 
+.player svg {
+  cursor: pointer;
+}
+
 .tracks {
   overflow: hidden;
 }
@@ -18,14 +22,12 @@
   padding: 8px 20px;
 }
 
-
-.track.current .image:hover img {
+.track .image:hover img {
   opacity: 0.5;
 }
 
-.track.current svg {
+.track svg {
   position: absolute;
-  cursor: pointer;
   width: 50px;
   height: 50px;
   opacity: 0;
@@ -35,7 +37,13 @@
   margin: -25px 0 0 -25px;
 }
 
-.track.current .image:hover svg {
+.track:not(:first-child) svg {
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+}
+
+.track .image:hover svg {
   opacity: 1;
 }
 
@@ -59,14 +67,15 @@
 }
 
 .track .artist {
-  color: #aaa
+  color: #aaa;
+  text-align: right;
 }
 
 .track .progressBar {
   width: 100%;
   height: 20px;
   background: #1c2933;
-  border: 3px solid #425f75;;
+  border: 3px solid #425f75;
   border-radius: 7px;
   margin-top: 3px;
 }
@@ -84,14 +93,14 @@
   align-items: center;
 }
 
-.track .progressWrapper .time{
+.track .progressWrapper .time {
   width: 60px;
 }
 
-.track .progressWrapper .time.pre{
+.track .progressWrapper .time.pre {
   text-align: left;
 }
 
-.track .progressWrapper .time.post{
+.track .progressWrapper .time.post {
   text-align: right;
 }

@@ -1,5 +1,7 @@
-export default interface PlaybackState {
-  context: { uri: string; metadata: Object };
+import WebPlaybackTrack from './WebPlaybackTrack';
+
+export default interface WebPlaybackState {
+  context: { uri?: string; metadata?: Record<string, string> };
   disallows: {
     pausing?: boolean;
     peeking_next?: boolean;
@@ -21,8 +23,8 @@ export default interface PlaybackState {
   shuffle: boolean;
   timestamp: number;
   track_window: {
-    current_track: TrackInterface;
-    next_tracks: Array<TrackInterface>;
-    previous_tracks: Array<TrackInterface>;
+    current_track: WebPlaybackTrack;
+    next_tracks: WebPlaybackTrack[];
+    previous_tracks: WebPlaybackTrack[];
   };
 }
