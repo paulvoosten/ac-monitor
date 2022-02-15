@@ -4,19 +4,24 @@ import useSWRImmutable from 'swr';
 import { shuffle } from '../../helpers/array';
 import WebPlaybackState from '../../interfaces/WebPlaybackState';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faArrowRightFromBracket, faBars, faShuffle} from '@fortawesome/free-solid-svg-icons';
-import {getSession, signOut} from 'next-auth/react';
+import {
+  faArrowRightFromBracket,
+  faBars,
+  faShuffle,
+  faVolumeHigh,
+} from '@fortawesome/free-solid-svg-icons';
+import { getSession, signOut } from 'next-auth/react';
 import Track from './Track';
 import Playlist from '../../interfaces/Playlist';
-import {Session} from "next-auth";
+import { Session } from 'next-auth';
+import ProgressBar from '../ProgressBar';
+import ToggleMenu from '../ToggleMenu';
 
 const storageKey = 'spotify-playlist';
 
 function getRandomNumber(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
-
-const syncPlaylistTimeout = 60000;
 
 const Player = ({ session }: { session: Session }) => {
   const homoMusicRef = useRef<NodeJS.Timeout>();
@@ -28,7 +33,7 @@ const Player = ({ session }: { session: Session }) => {
   const [player, setPlayer] = useState();
   const [playHomoMusic, setPlayHomoMusic] = useState(false);
   const [position, setPosition] = useState(0);
-  const [toggle, setToggle] = useState(false);
+  const [volume, setVolume] = useState(50);
   const {
     data: playlist,
     error,
@@ -48,6 +53,9 @@ const Player = ({ session }: { session: Session }) => {
             playlist.tracks = shuffle(playlist.tracks);
             resolve(playlist);
             return playlist;
+          })
+          .catch((error) => {
+            console.error('>>> Failed to fetch playlist <<<', error);
           });
       }),
     {
@@ -118,9 +126,8 @@ const Player = ({ session }: { session: Session }) => {
       startNewQueue();
     } else {
       if (!syncPlaylistRef.current) {
-        syncPlaylistRef.current = setTimeout(syncPlaylist, syncPlaylistTimeout);
+        syncPlaylistRef.current = setTimeout(syncPlaylist, 60000);
       }
-      // playlist.position = position;
       localStorage.setItem(storageKey, JSON.stringify(playlist));
     }
   }, [playlist, startNewQueue, syncPlaylist]);
@@ -221,34 +228,31 @@ const Player = ({ session }: { session: Session }) => {
           <source src="/static/audio/Homo muziek.wav" type="audio/wav" />
         </audio>
       )}
-      <div
-          className={`${styles.toggleMenu} ${(toggle ? styles.open : '')}`}
-          onClick={() => setToggle(!toggle)}
-      >
-        <FontAwesomeIcon
-            icon={faBars}
-            className={styles.bars}
-        />
-      </div>
-      <div className={`${styles.menu} ${(toggle ? styles.open : '')}`}>
-        Signed in as: {session.user?.email}
-        <div className={styles.buttons}>
-          <span onClick={() => signOut()}>
-            Logout
-            <FontAwesomeIcon
-              icon={faArrowRightFromBracket}
-              width={25}
+      <ToggleMenu>
+        <>
+          Signed in as: {session.user?.email}
+          <div className={styles.buttons}>
+            <span onClick={() => signOut()}>
+              <FontAwesomeIcon icon={faArrowRightFromBracket} />
+              Logout
+            </span>
+            <span onClick={startNewQueue}>
+              <FontAwesomeIcon icon={faShuffle} />
+              Shuffle
+            </span>
+          </div>
+          <div className={styles.volume}>
+            <FontAwesomeIcon icon={faVolumeHigh} />
+            <ProgressBar
+              value={volume}
+              max={100}
+              onClick={(volume) => {
+                player.setVolume(volume / 100).then(() => setVolume(volume));
+              }}
             />
-          </span>
-          <span onClick={startNewQueue}>
-            Shuffle
-            <FontAwesomeIcon
-              icon={faShuffle}
-              width={25}
-            />
-          </span>
-        </div>
-      </div>
+          </div>
+        </>
+      </ToggleMenu>
       <div className={styles.player}>
         <div className={styles.tracks}>
           {queue.map((track, index) => {
@@ -260,6 +264,24 @@ const Player = ({ session }: { session: Session }) => {
                 isCurrent={isCurrent}
                 paused={!active || paused}
                 position={position}
+                setPosition={(position) => {
+                  fetch(
+                    `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+                    {
+                      method: 'PUT',
+                      body: JSON.stringify({
+                        offset: { position: currentIndex },
+                        position_ms: position,
+                        uris: playlist.tracks.map((track) => track.uri),
+                      }),
+                      headers: {
+                        Authorization: `Bearer ${session.accessToken}`,
+                      },
+                    }
+                  ).then(() => {
+                    setPosition(position);
+                  });
+                }}
                 togglePlay={
                   isCurrent
                     ? () => {
@@ -273,7 +295,7 @@ const Player = ({ session }: { session: Session }) => {
                             method: 'PUT',
                             body: JSON.stringify({
                               offset: { position: currentIndex },
-                              position_ms: playlist.position,
+                              position_ms: position,
                               uris: playlist.tracks.map((track) => track.uri),
                             }),
                             headers: {

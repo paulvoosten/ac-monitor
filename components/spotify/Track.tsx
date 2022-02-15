@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import Track from '../../interfaces/Track';
+import ProgressBar from '../ProgressBar';
 
 function formatTime(ms: number) {
   const s = Math.floor(ms / 1000);
@@ -16,13 +17,15 @@ const Track = ({
   isCurrent,
   paused,
   position,
+  setPosition,
   togglePlay,
   track,
 }: {
   isCurrent: boolean;
   paused: boolean;
   position: number;
-  togglePlay?: () => void;
+  setPosition: (position: number) => void;
+  togglePlay: () => void;
   track: Track;
 }) => {
   return (
@@ -49,14 +52,19 @@ const Track = ({
             <div className={`${styles.time} ${styles.pre}`}>
               {formatTime(position)}
             </div>
-            <div className={styles.progressBar}>
+            <ProgressBar
+              value={position}
+              max={track.duration}
+              onClick={setPosition}
+            />
+            {/* <div className={styles.progressBar}>
               <div
                 style={{
                   width: `${(position / track.duration) * 100}%`,
                 }}
                 className={styles.progress}
               />
-            </div>
+            </div> */}
             <div className={`${styles.time} ${styles.post}`}>
               {formatTime(track.duration)}
             </div>
