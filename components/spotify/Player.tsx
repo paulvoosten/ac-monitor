@@ -4,10 +4,11 @@ import useSWRImmutable from 'swr';
 import { shuffle } from '../../helpers/array';
 import WebPlaybackState from '../../interfaces/WebPlaybackState';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShuffle } from '@fortawesome/free-solid-svg-icons';
-import { getSession } from 'next-auth/react';
+import {faArrowRightFromBracket, faBars, faShuffle} from '@fortawesome/free-solid-svg-icons';
+import {getSession, signOut} from 'next-auth/react';
 import Track from './Track';
 import Playlist from '../../interfaces/Playlist';
+import {Session} from "next-auth";
 
 const storageKey = 'spotify-playlist';
 
@@ -17,7 +18,7 @@ function getRandomNumber(min: number, max: number) {
 
 const syncPlaylistTimeout = 60000;
 
-const Player = ({ token }: { token: string }) => {
+const Player = ({ session }: { session: Session }) => {
   const homoMusicRef = useRef<NodeJS.Timeout>();
   const syncPlaylistRef = useRef<NodeJS.Timeout>();
   const timeRef = useRef<NodeJS.Timer>();
@@ -27,6 +28,7 @@ const Player = ({ token }: { token: string }) => {
   const [player, setPlayer] = useState();
   const [playHomoMusic, setPlayHomoMusic] = useState(false);
   const [position, setPosition] = useState(0);
+  const [toggle, setToggle] = useState(false);
   const {
     data: playlist,
     error,
@@ -66,11 +68,11 @@ const Player = ({ token }: { token: string }) => {
           uris: playlist.tracks.map((track) => track.uri),
         }),
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${session.accessToken}`,
         },
       });
     });
-  }, [deviceId, mutatePlaylist, token]);
+  }, [deviceId, mutatePlaylist, session.accessToken]);
   const syncPlaylist = useCallback(() => {
     syncPlaylistRef.current = undefined;
     if (!playlist) {
@@ -219,14 +221,35 @@ const Player = ({ token }: { token: string }) => {
           <source src="/static/audio/Homo muziek.wav" type="audio/wav" />
         </audio>
       )}
-      <div className={styles.player}>
-        <div>
-          <FontAwesomeIcon
-            icon={faShuffle}
-            onClick={startNewQueue}
-            width={25}
-          />
+      <div
+          className={`${styles.toggleMenu} ${(toggle ? styles.open : '')}`}
+          onClick={() => setToggle(!toggle)}
+      >
+        <FontAwesomeIcon
+            icon={faBars}
+            className={styles.bars}
+        />
+      </div>
+      <div className={`${styles.menu} ${(toggle ? styles.open : '')}`}>
+        Signed in as: {session.user?.email}
+        <div className={styles.buttons}>
+          <span onClick={() => signOut()}>
+            Logout
+            <FontAwesomeIcon
+              icon={faArrowRightFromBracket}
+              width={25}
+            />
+          </span>
+          <span onClick={startNewQueue}>
+            Shuffle
+            <FontAwesomeIcon
+              icon={faShuffle}
+              width={25}
+            />
+          </span>
         </div>
+      </div>
+      <div className={styles.player}>
         <div className={styles.tracks}>
           {queue.map((track, index) => {
             const isCurrent = index === 0;
@@ -254,7 +277,7 @@ const Player = ({ token }: { token: string }) => {
                               uris: playlist.tracks.map((track) => track.uri),
                             }),
                             headers: {
-                              Authorization: `Bearer ${token}`,
+                              Authorization: `Bearer ${session.accessToken}`,
                             },
                           }
                         );
@@ -282,7 +305,7 @@ const Player = ({ token }: { token: string }) => {
                               ),
                             }),
                             headers: {
-                              Authorization: `Bearer ${token}`,
+                              Authorization: `Bearer ${session.accessToken}`,
                             },
                           }
                         ).then(() => {
