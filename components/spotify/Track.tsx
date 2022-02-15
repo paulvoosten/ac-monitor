@@ -40,8 +40,8 @@ const Track = ({
         />
       </div>
       <div className={styles.info}>
-        <div className={styles.name}>
-          {track.name}
+        <div className={styles.nameArtist}>
+          <div className={styles.name}>{track.name}</div>
           <div className={styles.artist}>{track.artist}</div>
         </div>
         {isCurrent && (

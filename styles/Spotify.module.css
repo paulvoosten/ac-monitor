@@ -51,6 +51,7 @@
   position: relative;
   display: flex;
   justify-content: center;
+  min-width: 50px;
 }
 
 .track .info {
@@ -60,15 +61,24 @@
   padding-left: 20px;
 }
 
-.track .name {
+.track .nameArtist {
   font-size: 30px;
   display: flex;
   justify-content: space-between;
 }
 
+.track .name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .track .artist {
   color: #aaa;
   text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .track .progressBar {
@@ -103,4 +113,71 @@
 
 .track .progressWrapper .time.post {
   text-align: right;
+}
+
+.bars {
+  width: 30px;
+  height: 30px;
+}
+
+.toggleMenu {
+  background: #1c2933;
+  border-left: 3px solid #425f75;
+  border-bottom: 3px solid #425f75;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-left-radius: 10px;
+  transition: 300ms all ease-in-out;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.toggleMenu svg {
+  color: #425f75;
+}
+
+.toggleMenu.open {
+  opacity: 1;
+  border-bottom-left-radius: 0;
+}
+.toggleMenu:hover {
+  opacity: 1;
+}
+
+.menu {
+  display: none;
+  background: #1c2933;
+  border: 3px solid #425f75;
+  border-radius: 10px;
+  border-top-right-radius: 0;
+  position: fixed;
+  right: 0;
+  top: 47px;
+  padding: 15px;
+  color: white;
+  z-index: 99;
+  max-width: 100%;
+}
+
+.menu.open {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu .buttons {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.menu .buttons span:hover {
+  text-decoration: underline;
 }
