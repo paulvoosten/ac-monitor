@@ -10,10 +10,6 @@ const ProgressBar = ({
   onClick: (value: number) => void;
 }) => {
   return (
-    // <span
-    //   className={styles.progressBar}
-    //   data-before-width={`${Math.floor((value / max) * 100)}%`}
-    // >
     <input
       className={styles.progressBar}
       type="range"
@@ -23,7 +19,6 @@ const ProgressBar = ({
         onClick(Number(e.target.value));
       }}
     />
-    // </span>
   );
 };
 
