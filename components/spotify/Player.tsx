@@ -6,9 +6,9 @@ import WebPlaybackState from '../../interfaces/WebPlaybackState';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRightFromBracket,
-  faBars,
   faShuffle,
   faVolumeHigh,
+  faVolumeLow,
 } from '@fortawesome/free-solid-svg-icons';
 import { getSession, signOut } from 'next-auth/react';
 import Track from './Track';
@@ -242,7 +242,7 @@ const Player = ({ session }: { session: Session }) => {
             </span>
           </div>
           <div className={styles.volume}>
-            <FontAwesomeIcon icon={faVolumeHigh} />
+            <FontAwesomeIcon icon={faVolumeLow} />
             <ProgressBar
               value={volume}
               max={100}
@@ -250,6 +250,7 @@ const Player = ({ session }: { session: Session }) => {
                 player.setVolume(volume / 100).then(() => setVolume(volume));
               }}
             />
+            <FontAwesomeIcon icon={faVolumeHigh} />
           </div>
         </>
       </ToggleMenu>
