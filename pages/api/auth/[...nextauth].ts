@@ -28,7 +28,7 @@ async function refreshAccessToken(token: JWT) {
     return {
       ...token,
       accessToken: refreshedToken.access_token,
-      accessTokenExpires: Date.now() + refreshedToken.expires_in * 1000 - 30000,
+      accessTokenExpires: Date.now() + refreshedToken.expires_in * 1 - 30000,//1000
       refreshToken: refreshedToken.refresh_token ?? token.refreshToken,
     };
   } catch (error) {
@@ -45,7 +45,7 @@ export default NextAuth({
       if (account && user) {
         return {
           accessToken: account.access_token,
-          accessTokenExpires: Date.now() + account.expires_in * 1000 - 30000,
+          accessTokenExpires: Date.now() + account.expires_in * 1 - 30000,//1000
           refreshToken: account.refresh_token,
           user,
         };

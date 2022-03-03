@@ -78,6 +78,8 @@ const Player = ({ session }: { session: Session }) => {
         headers: {
           Authorization: `Bearer ${session.accessToken}`,
         },
+      }).catch((error) => {
+        console.error(error);
       });
     });
   }, [deviceId, mutatePlaylist, session.accessToken]);
@@ -113,7 +115,9 @@ const Player = ({ session }: { session: Session }) => {
           newUris.includes(track.uri)
         );
         mutatePlaylist(syncedPlaylist, false);
-      });
+      }).catch((error) => {
+      console.error(error);
+    });
   }, [mutatePlaylist, playlist]);
   useEffect(() => {
     if (!playlist) {
@@ -281,6 +285,8 @@ const Player = ({ session }: { session: Session }) => {
                     }
                   ).then(() => {
                     setPosition(position);
+                  }).catch((error) => {
+                    console.error(error);
                   });
                 }}
                 togglePlay={
@@ -303,7 +309,9 @@ const Player = ({ session }: { session: Session }) => {
                               Authorization: `Bearer ${session.accessToken}`,
                             },
                           }
-                        );
+                        ).catch((error) => {
+                          console.error(error);
+                        });
                       }
                     : () => {
                         const newPlaylist = {
@@ -333,6 +341,8 @@ const Player = ({ session }: { session: Session }) => {
                           }
                         ).then(() => {
                           mutatePlaylist(newPlaylist, false);
+                        }).catch((error) => {
+                          console.error(error);
                         });
                       }
                 }

@@ -29,7 +29,9 @@ async function getPlaylist(token: string, playlistId: string) {
         Authorization: `Bearer ${token}`,
       },
     }
-  );
+  ).catch((error) => {
+    console.error(error);
+  });
   const playlist: WebPlaylist = await response.json();
   if (!response.ok) {
     throw new Error('Failed to fetch playlist');
@@ -51,6 +53,8 @@ async function getTracks(token: string, url: string) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  }).catch((error) => {
+    console.error(error);
   });
   const body = await response.json();
   if (!response.ok) {
