@@ -197,7 +197,8 @@
 }
 
 .menu {
-  display: none;
+  display: flex;
+  flex-direction: column;
   background: #1c2933;
   border: 3px solid #425f75;
   border-radius: 10px;
@@ -215,10 +216,6 @@
   margin-right: 10px;
 }
 
-.menu.open {
-  display: flex;
-  flex-direction: column;
-}
 .menu .volume,
 .menu .buttons {
   display: flex;
@@ -240,5 +237,29 @@
   margin-right: 10px;
 }
 .menu .volume svg:last-of-type {
+  margin-left: 10px;
+}
+
+.menu .playlists {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.menu .playlists input {
+  margin-right: 10px;
+}
+
+.menu .playlists .playlist {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+.menu .playlists .playlist:not(:last-of-type) {
+  margin-bottom: 10px;
+}
+
+.menu .playlists .playlist .info {
   margin-left: 10px;
 }

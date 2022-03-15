@@ -16,7 +16,10 @@ declare module 'next-auth' {
     expires: string;
   }
 
-  interface User extends DefaultUser {}
+  interface User extends DefaultUser {
+    email: string;
+    test: string;
+  }
 }
 
 declare module 'next-auth/jwt' {

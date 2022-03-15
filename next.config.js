@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['i.scdn.co'],
+    domains: [
+      'blend-playlist-covers.spotifycdn.com',
+      'i.scdn.co',
+      'mosaic.scdn.co',
+    ],
   },
   reactStrictMode: true,
   serverRuntimeConfig: {

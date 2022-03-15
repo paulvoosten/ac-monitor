@@ -1,24 +1,23 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
-import WebPlaylist from '../../../interfaces/WebPlaylist';
-import WebTrack from '../../../interfaces/WebTrack';
 
-const secret: string = process.env.NEXTAUTH_SECRET;
+const secret = process.env.NEXTAUTH_SECRET;
 const homoMusicId = ['1128627181'];
 
 export default async function handler(
-  req: NextApiRequest,
+  req: NextApiRequest & { query: { playlist: string } },
   res: NextApiResponse
 ) {
   const token = await getToken({ req, secret });
   if (!token) {
     return res.status(401);
-  } else if (!req.query.playlist || typeof req.query.playlist !== 'string') {
-    res.status(400).json({ error: 'Invalid `playlist` query parameter.' });
-    return;
   }
-
-  res.json(await getPlaylist(token.accessToken, req.query.playlist));
+  try {
+    res.json(await getPlaylist(token.accessToken, req.query.playlist));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
 }
 
 async function getPlaylist(token: string, playlistId: string) {
@@ -30,19 +29,20 @@ async function getPlaylist(token: string, playlistId: string) {
       },
     }
   );
-  const playlist: WebPlaylist = await response.json();
+  const playlist: SpotifyApi.PlaylistObjectFull = await response.json();
   if (!response.ok) {
-    throw new Error('Failed to fetch playlist');
+    throw playlist;
   }
   let tracks = playlist.tracks.items;
   if (playlist.tracks.next) {
     tracks = tracks.concat(await getTracks(token, playlist.tracks.next));
   }
   return {
+    id: playlist.id,
     image: playlist.images[0].url,
+    name: playlist.name,
     position: 0,
     tracks: tracks.map(formatTrack),
-    uri: playlist.uri,
   };
 }
 
@@ -52,18 +52,18 @@ async function getTracks(token: string, url: string) {
       Authorization: `Bearer ${token}`,
     },
   });
-  const body = await response.json();
+  const body: SpotifyApi.PlaylistTrackResponse = await response.json();
   if (!response.ok) {
-    throw new Error('Failed to fetch tracks');
+    throw body;
   }
-  let tracks: WebTrack[] = body.items;
+  let tracks = body.items;
   if (body.next) {
     tracks = tracks.concat(await getTracks(token, body.next));
   }
   return tracks;
 }
 
-function formatTrack(track: WebTrack) {
+function formatTrack(track: SpotifyApi.PlaylistTrackObject) {
   return {
     album: track.track.album.name,
     artist: track.track.artists?.[0].name,

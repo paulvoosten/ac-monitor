@@ -2,8 +2,8 @@ import { JWT } from 'next-auth/jwt';
 import NextAuth from 'next-auth/next';
 import SpotifyProvider from 'next-auth/providers/spotify';
 
-const SPOTIFY_ID: string = process.env.SPOTIFY_CLIENT_ID;
-const SPOTIFY_SECRET: string = process.env.SPOTIFY_CLIENT_SECRET;
+const SPOTIFY_ID = process.env.SPOTIFY_CLIENT_ID;
+const SPOTIFY_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 
 async function refreshAccessToken(token: JWT) {
   try {

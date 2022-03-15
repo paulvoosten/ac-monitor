@@ -1,10 +1,27 @@
 import type { NextPage } from 'next';
-import {useEffect} from 'react';
-import { signIn, useSession } from 'next-auth/react';
-import Player from '../components/spotify/Player';
+import React, { useCallback, useEffect, useState } from 'react';
+import { getSession, signIn, useSession } from 'next-auth/react';
+import { SDKProvider } from '../components/spotify/providers/SDK';
+import Playlist from '../components/spotify/Playlist';
+import Menu from '../components/spotify/Menu';
+import { SWRConfig } from 'swr';
+import { localStorageProvider } from '../helpers/swr';
+import { PlaylistProvider } from '../components/spotify/providers/Playlist';
+
+export const INITIAL_VOLUME = 50;
 
 const Spotify: NextPage = () => {
+  const [playlistId, setPlaylistId] = useState('6cdEgnaFIU4dIPGeB4bM5v');
   const { data: session } = useSession();
+  const getOAuthToken: Spotify.PlayerInit['getOAuthToken'] = async (
+    callback
+  ) => {
+    const session = await getSession();
+    if (!session) {
+      throw new Error('Session not available');
+    }
+    callback(session.accessToken);
+  };
   useEffect(() => {
     if (session?.error === 'RefreshAccessTokenError') {
       signIn('spotify');
@@ -18,7 +35,20 @@ const Spotify: NextPage = () => {
       </>
     );
   }
-  return <Player session={session} />;
+  return (
+    <SWRConfig value={{ provider: localStorageProvider('spotify') }}>
+      <SDKProvider
+        getOAuthToken={getOAuthToken}
+        name="AdCalls Dev-hok"
+        volume={INITIAL_VOLUME / 100}
+      >
+        <PlaylistProvider id={playlistId}>
+          <Menu setPlaylistId={setPlaylistId} />
+          <Playlist />
+        </PlaylistProvider>
+      </SDKProvider>
+    </SWRConfig>
+  );
 };
 
 export default Spotify;

@@ -31,7 +31,7 @@ const Track = ({
   return (
     <div key={track.uri} className={styles.track}>
       <div className={styles.image}>
-        <Image
+        <img
           alt={track.name}
           src={track.image}
           width={isCurrent ? 84 : 50}
