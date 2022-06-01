@@ -12,9 +12,7 @@ export const DeviceProvider: React.FC = ({ children }) => {
   const [device, setDevice] = useState<Device | null>(null);
   const player = usePlayer();
   useEffect(() => {
-    if (!player) {
-      return;
-    }
+    if (!player) return;
     const ready = ({ device_id }: Spotify.WebPlaybackInstance) => {
       setDevice({ id: device_id, ready: true });
     };
@@ -35,8 +33,6 @@ export const DeviceProvider: React.FC = ({ children }) => {
 
 export function useDevice() {
   const value = useContext(DeviceContext);
-  if (value === undefined) {
-    throw new Error('DeviceContext not available');
-  }
+  if (value === undefined) throw new Error('DeviceContext not available');
   return value;
 }

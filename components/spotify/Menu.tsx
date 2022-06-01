@@ -27,20 +27,14 @@ const Menu = ({
   const { mutate: mutatePlaylist } = usePlaylist();
   const { data: session } = useSession();
   const startNewQueue = useCallback(() => {
-    if (!device || !session?.accessToken) {
-      return;
-    }
+    if (!device || !session?.accessToken) return;
     mutatePlaylist().then((playlist) => {
-      if (!playlist) {
-        return;
-      }
+      if (!playlist) return;
       fetch(
         `https://api.spotify.com/v1/me/player/play?device_id=${device.id}`,
         {
           method: 'PUT',
-          body: JSON.stringify({
-            uris: playlist.tracks.map((track) => track.uri),
-          }),
+          body: JSON.stringify({ uris: [playlist.tracks[0].uri] }),
           headers: {
             Authorization: `Bearer ${session.accessToken}`,
           },
@@ -48,9 +42,7 @@ const Menu = ({
       );
     });
   }, [device, mutatePlaylist, session?.accessToken]);
-  if (!session) {
-    return null;
-  }
+  if (!session) return null;
   return (
     <ToggleMenu>
       Signed in as: {session.user?.email}

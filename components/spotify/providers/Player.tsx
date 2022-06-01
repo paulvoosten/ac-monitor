@@ -23,9 +23,7 @@ export const PlayerProvider: React.FC<{
         volume,
       });
       setPlayer(player);
-      if (connectOnInit) {
-        player.connect();
-      }
+      if (connectOnInit) player.connect();
       return () => player.disconnect();
     }
   }, [connectOnInit, sdkReady]);
@@ -36,8 +34,6 @@ export const PlayerProvider: React.FC<{
 
 export function usePlayer() {
   const value = useContext(PlayerContext);
-  if (value === undefined) {
-    throw new Error('PlayerContext not available');
-  }
+  if (value === undefined) throw new Error('PlayerContext not available');
   return value;
 }

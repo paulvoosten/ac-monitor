@@ -31,13 +31,9 @@ const Playlists = ({
       : [];
   });
   useEffect(() => {
-    if (!playlist) {
-      return;
-    }
+    if (!playlist) return;
     mutatePlaylists((playlists) => {
-      if (!playlists) {
-        return playlists;
-      }
+      if (!playlists) return playlists;
       return [
         {
           id: playlist.id,
@@ -48,9 +44,7 @@ const Playlists = ({
       ];
     }, false);
   }, [mutatePlaylists, playlist]);
-  if (!player || !playlists) {
-    return null;
-  }
+  if (!player || !playlists) return null;
   return (
     <div className={styles.playlists}>
       <h2>Playlists</h2>

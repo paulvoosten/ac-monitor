@@ -10,9 +10,7 @@ export const PlaybackStateProvider: React.FC = ({ children }) => {
     useState<Spotify.PlaybackState | null>(null);
   const player = usePlayer();
   useEffect(() => {
-    if (!player) {
-      return;
-    }
+    if (!player) return;
     const playerStateChanged = (state: Spotify.PlaybackState) => {
       setPlaybackState(state);
     };

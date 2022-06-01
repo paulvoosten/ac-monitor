@@ -32,28 +32,20 @@ export const PlaylistProvider: React.FC<{ id: string }> = ({
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       mutate(async (data) => {
-        if (!data) {
-          return data;
-        }
+        if (!data) return data;
         const playlist: Playlist = await fetch(
           `/api/spotify/queue/${data.id}`
         ).then((response) => response.json());
-        if ('error' in playlist) {
-          return data;
-        }
-        let currentIndex = data.tracks.findIndex(
-          (track) => track.state === 'queued'
-        );
-        if (currentIndex === -1) {
-          currentIndex = 0;
-        }
+        if ('error' in playlist) return data;
+        let queued = data.tracks.findIndex((track) => track.state === 'queued');
+        if (queued === -1) queued = 0;
         const currentUris = data.tracks.map((track) => track.uri);
         const newUris: string[] = [];
         playlist.tracks.forEach((track) => {
           newUris.push(track.uri);
           if (!currentUris.includes(track.uri)) {
             data.tracks.splice(
-              getRandomNumber(currentIndex, data.tracks.length),
+              getRandomNumber(queued, data.tracks.length),
               0,
               track
             );
@@ -75,8 +67,6 @@ export const PlaylistProvider: React.FC<{ id: string }> = ({
 
 export function usePlaylist() {
   const value = useContext(PlaylistContext);
-  if (value === undefined) {
-    throw new Error('PlaylistProvider not available');
-  }
+  if (value === undefined) throw new Error('PlaylistProvider not available');
   return value;
 }

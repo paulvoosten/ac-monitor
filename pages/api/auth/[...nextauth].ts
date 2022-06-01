@@ -22,9 +22,7 @@ async function refreshAccessToken(token: JWT) {
       method: 'POST',
     });
     const refreshedToken = await response.json();
-    if (!response.ok) {
-      throw refreshedToken;
-    }
+    if (!response.ok) throw refreshedToken;
     return {
       ...token,
       accessToken: refreshedToken.access_token,
@@ -50,9 +48,7 @@ export default NextAuth({
           user,
         };
       }
-      if (Date.now() < token.accessTokenExpires) {
-        return token;
-      }
+      if (Date.now() < token.accessTokenExpires) return token;
       return refreshAccessToken(token);
     },
     async session({ session, token }) {

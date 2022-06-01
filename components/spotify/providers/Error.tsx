@@ -9,9 +9,7 @@ export const ErrorProvider: React.FC = ({ children }) => {
   const [error, setError] = useState<ErrorState>();
   const player = usePlayer();
   useEffect(() => {
-    if (!player) {
-      return;
-    }
+    if (!player) return;
     const initialization = (error: Spotify.Error) => {
       setError({ ...error, type: 'initialization_error' });
     };
@@ -42,8 +40,6 @@ export const ErrorProvider: React.FC = ({ children }) => {
 
 export function useError() {
   const value = useContext(ErrorContext);
-  if (value === undefined) {
-    throw new Error('ErrorContext not available');
-  }
+  if (value === undefined) throw new Error('ErrorContext not available');
   return value;
 }

@@ -42,8 +42,6 @@ export const SDKProvider: React.FC<{
 
 export function useSDK() {
   const value = useContext(SDKContext);
-  if (value === undefined) {
-    throw new Error('SDKContext not available');
-  }
+  if (value === undefined) throw new Error('SDKContext not available');
   return value;
 }

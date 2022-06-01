@@ -68,9 +68,9 @@ const Board: NextPage = ({
       </header>
 
       <div className={styles.grid}>
-        {files.map((file, index) => (
+        {files.map((file, i) => (
           <div
-            key={index}
+            key={i}
             className={styles.card}
             onClick={() => {
               setQueue([...queue, file]);

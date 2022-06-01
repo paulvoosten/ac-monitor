@@ -2,16 +2,13 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
 const secret = process.env.NEXTAUTH_SECRET;
-const homoMusicId = ['1128627181'];
 
 export default async function handler(
   req: NextApiRequest & { query: { playlist: string } },
   res: NextApiResponse
 ) {
   const token = await getToken({ req, secret });
-  if (!token) {
-    return res.status(401);
-  }
+  if (!token) return res.status(401);
   try {
     res.json(await getPlaylist(token.accessToken, req.query.playlist));
   } catch (error) {
@@ -30,9 +27,7 @@ async function getPlaylist(token: string, playlistId: string) {
     }
   );
   const playlist: SpotifyApi.PlaylistObjectFull = await response.json();
-  if (!response.ok) {
-    throw playlist;
-  }
+  if (!response.ok) throw playlist;
   let tracks = playlist.tracks.items;
   if (playlist.tracks.next) {
     tracks = tracks.concat(await getTracks(token, playlist.tracks.next));
@@ -53,9 +48,7 @@ async function getTracks(token: string, url: string) {
     },
   });
   const body: SpotifyApi.PlaylistTrackResponse = await response.json();
-  if (!response.ok) {
-    throw body;
-  }
+  if (!response.ok) throw body;
   let tracks = body.items;
   if (body.next) {
     tracks = tracks.concat(await getTracks(token, body.next));
@@ -66,10 +59,9 @@ async function getTracks(token: string, url: string) {
 function formatTrack(track: SpotifyApi.PlaylistTrackObject) {
   return {
     album: track.track.album.name,
-    artist: track.track.artists?.[0].name,
+    artist: track.track.artists[0].name,
     duration: track.track.duration_ms,
     image: track.track.album.images[0].url,
-    isHomoMusic: homoMusicId.includes(track.added_by.id),
     name: track.track.name,
     state: 'queued',
     uri: track.track.uri,

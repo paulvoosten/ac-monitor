@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getSession, signIn, useSession } from 'next-auth/react';
 import { SDKProvider } from '../components/spotify/providers/SDK';
 import Playlist from '../components/spotify/Playlist';
@@ -17,15 +17,11 @@ const Spotify: NextPage = () => {
     callback
   ) => {
     const session = await getSession();
-    if (!session) {
-      throw new Error('Session not available');
-    }
+    if (!session) throw new Error('Session not available');
     callback(session.accessToken);
   };
   useEffect(() => {
-    if (session?.error === 'RefreshAccessTokenError') {
-      signIn('spotify');
-    }
+    if (session?.error === 'RefreshAccessTokenError') signIn('spotify');
   }, [session]);
   if (!session) {
     return (
