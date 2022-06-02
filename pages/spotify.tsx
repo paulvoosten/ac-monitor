@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
-import React, { useEffect, useState } from 'react';
-import { getSession, signIn, useSession } from 'next-auth/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { signIn, useSession } from 'next-auth/react';
 import { SDKProvider } from '../components/spotify/providers/SDK';
 import Playlist from '../components/spotify/Playlist';
 import Menu from '../components/spotify/Menu';
@@ -12,24 +12,29 @@ export const INITIAL_VOLUME = 50;
 
 const Spotify: NextPage = () => {
   const [playlistId, setPlaylistId] = useState('6cdEgnaFIU4dIPGeB4bM5v');
-  const { data: session } = useSession();
-  const getOAuthToken: Spotify.PlayerInit['getOAuthToken'] = async (
-    callback
-  ) => {
-    const session = await getSession();
-    if (!session) throw new Error('Session not available');
-    callback(session.accessToken);
-  };
+  const { data: session, status } = useSession<true>({
+    required: true,
+    onUnauthenticated: () => signIn('spotify'),
+  });
+  const getOAuthToken: Spotify.PlayerInit['getOAuthToken'] = useCallback(
+    (callback) => {
+      if (session) callback(session.accessToken);
+    },
+    [session]
+  );
   useEffect(() => {
-    if (session?.error === 'RefreshAccessTokenError') signIn('spotify');
+    if (!session) return;
+    if (session.error === 'RefreshAccessTokenError') {
+      signIn('spotify');
+      return;
+    }
+    const id = window.setTimeout(async () => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    }, session.accessTokenExpiresAt - Date.now());
+    return () => window.clearTimeout(id);
   }, [session]);
-  if (!session) {
-    return (
-      <>
-        <h1>Not signed in yet</h1>
-        <button onClick={() => signIn('spotify')}>Sign in</button>
-      </>
-    );
+  if (status === 'loading') {
+    return <>Loading or unauthenticated</>;
   }
   return (
     <SWRConfig value={{ provider: localStorageProvider('spotify') }}>

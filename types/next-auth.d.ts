@@ -12,6 +12,7 @@ declare module 'next-auth' {
 
   interface Session extends DefaultSession {
     accessToken: string;
+    accessTokenExpiresAt: number;
     error?: string;
     expires: string;
   }
@@ -25,7 +26,7 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   interface JWT {
     accessToken: string;
-    accessTokenExpires: number;
+    accessTokenExpiresAt: number;
     error?: string;
     refreshToken: string;
     user: User;
