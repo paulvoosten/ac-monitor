@@ -5,7 +5,7 @@ const secret = process.env.NEXTAUTH_SECRET;
 
 export default async function handler(
   req: NextApiRequest & { query: { playlist: string } },
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const token = await getToken({ req, secret });
   if (!token) return res.status(401);
@@ -18,14 +18,11 @@ export default async function handler(
 }
 
 async function getPlaylist(token: string, playlistId: string) {
-  const response = await fetch(
-    `https://api.spotify.com/v1/playlists/${playlistId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const playlist: SpotifyApi.PlaylistObjectFull = await response.json();
   if (!response.ok) throw playlist;
   let tracks = playlist.tracks.items;

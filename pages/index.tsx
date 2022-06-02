@@ -11,9 +11,7 @@ const Board: NextPage = ({
   files: Array<{ name: string; source: string; type: string }>;
 }) => {
   const audioRef: LegacyRef<HTMLAudioElement> = useRef(null);
-  const [queue, setQueue] = useState<
-    Array<{ name: string; source: string; type: string }>
-  >([]);
+  const [queue, setQueue] = useState<Array<{ name: string; source: string; type: string }>>([]);
   useEffect(() => {
     if (queue.length > 0 && audioRef.current && audioRef.current.paused) {
       audioRef.current.pause();
@@ -35,13 +33,10 @@ const Board: NextPage = ({
           <h1>AdCalls Soundboard</h1>
           <button
             className={styles.button}
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               e.stopPropagation();
-              setQueue([
-                ...queue,
-                files[Math.floor(Math.random() * files.length)],
-              ]);
+              setQueue([...queue, files[Math.floor(Math.random() * files.length)]]);
             }}
           >
             Random
@@ -49,7 +44,7 @@ const Board: NextPage = ({
           <button
             className={styles.button}
             disabled={!audioRef.current || queue.length === 0}
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               e.stopPropagation();
               audioRef.current?.pause();
@@ -90,8 +85,8 @@ export async function getStaticProps() {
   const filetype = 'wav';
   const files = fs
     .readdirSync(getPath('public/static/audio/'))
-    .filter((file) => file.endsWith(`.${filetype}`))
-    .map((file) => ({
+    .filter(file => file.endsWith(`.${filetype}`))
+    .map(file => ({
       name: file.replace(new RegExp(`\.${filetype}$`), ''),
       source: encodeURIComponent(`/static/audio/${file}`),
       type: `audio/${filetype}`,

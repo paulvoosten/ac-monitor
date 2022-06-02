@@ -17,10 +17,10 @@ const Spotify: NextPage = () => {
     onUnauthenticated: () => signIn('spotify'),
   });
   const getOAuthToken: Spotify.PlayerInit['getOAuthToken'] = useCallback(
-    (callback) => {
+    callback => {
       if (session) callback(session.accessToken);
     },
-    [session]
+    [session],
   );
   useEffect(() => {
     if (!session) return;

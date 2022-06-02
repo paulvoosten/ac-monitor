@@ -1,9 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useSDK } from './SDK';
 
-const PlayerContext = createContext<Spotify.Player | null | undefined>(
-  undefined
-);
+const PlayerContext = createContext<Spotify.Player | null | undefined>(undefined);
 
 export const PlayerProvider: React.FC<{
   getOAuthToken: Spotify.PlayerInit['getOAuthToken'];
@@ -18,7 +16,7 @@ export const PlayerProvider: React.FC<{
   useEffect(() => {
     if (sdkReady) {
       const player = new Spotify.Player({
-        getOAuthToken: (callback) => getOAuthTokenRef.current(callback),
+        getOAuthToken: callback => getOAuthTokenRef.current(callback),
         name,
         volume,
       });
@@ -26,10 +24,8 @@ export const PlayerProvider: React.FC<{
       if (connectOnInit) player.connect();
       return () => player.disconnect();
     }
-  }, [connectOnInit, sdkReady]);
-  return (
-    <PlayerContext.Provider value={player}>{children}</PlayerContext.Provider>
-  );
+  }, [connectOnInit, sdkReady]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <PlayerContext.Provider value={player}>{children}</PlayerContext.Provider>;
 };
 
 export function usePlayer() {

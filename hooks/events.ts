@@ -3,13 +3,11 @@ import { RefObject, useEffect, useRef } from 'react';
 export function useEventListener<
   KW extends keyof WindowEventMap,
   KH extends keyof HTMLElementEventMap,
-  T extends HTMLElement | void = void
+  T extends HTMLElement | void = void,
 >(
   eventName: KW | KH,
-  handler: (
-    event: WindowEventMap[KW] | HTMLElementEventMap[KH] | Event
-  ) => void,
-  element?: RefObject<T>
+  handler: (event: WindowEventMap[KW] | HTMLElementEventMap[KH] | Event) => void,
+  element?: RefObject<T>,
 ) {
   // Create a ref that stores handler
   const savedHandler = useRef(handler);
@@ -26,8 +24,7 @@ export function useEventListener<
     }
 
     // Create event listener that calls handler function stored in ref
-    const eventListener: typeof handler = (event) =>
-      savedHandler.current(event);
+    const eventListener: typeof handler = event => savedHandler.current(event);
 
     targetElement.addEventListener(eventName, eventListener);
 
@@ -43,9 +40,9 @@ type Handler = (event: MouseEvent | Event) => void;
 export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
   ref: RefObject<T>,
   handler: Handler,
-  mouseEvent: 'mousedown' | 'mouseup' = 'mousedown'
+  mouseEvent: 'mousedown' | 'mouseup' = 'mousedown',
 ): void {
-  useEventListener(mouseEvent, (event) => {
+  useEventListener(mouseEvent, event => {
     const element = ref?.current;
 
     // Do nothing if clicking ref's element or descendent elements

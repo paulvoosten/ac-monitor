@@ -37,10 +37,7 @@ const Track = ({
           width={isCurrent ? 84 : 50}
           height={isCurrent ? 84 : 50}
         />
-        <FontAwesomeIcon
-          icon={!isCurrent || paused ? faPlay : faPause}
-          onClick={togglePlay}
-        />
+        <FontAwesomeIcon icon={!isCurrent || paused ? faPlay : faPause} onClick={togglePlay} />
       </div>
       <div className={styles.info}>
         <div className={styles.nameArtist}>
@@ -49,25 +46,9 @@ const Track = ({
         </div>
         {isCurrent && (
           <div className={styles.progressWrapper}>
-            <div className={`${styles.time} ${styles.pre}`}>
-              {formatTime(position)}
-            </div>
-            <ProgressBar
-              value={position}
-              max={track.duration}
-              onClick={setPosition}
-            />
-            {/* <div className={styles.progressBar}>
-              <div
-                style={{
-                  width: `${(position / track.duration) * 100}%`,
-                }}
-                className={styles.progress}
-              />
-            </div> */}
-            <div className={`${styles.time} ${styles.post}`}>
-              {formatTime(track.duration)}
-            </div>
+            <div className={`${styles.time} ${styles.pre}`}>{formatTime(position)}</div>
+            <ProgressBar value={position} max={track.duration} onClick={setPosition} />
+            <div className={`${styles.time} ${styles.post}`}>{formatTime(track.duration)}</div>
           </div>
         )}
       </div>

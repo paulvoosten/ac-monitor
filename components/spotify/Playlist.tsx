@@ -25,34 +25,30 @@ const Playlist = () => {
       ) {
         return;
       }
-      fetch(
-        `https://api.spotify.com/v1/me/player/play?device_id=${device.id}`,
-        {
-          method: 'PUT',
-          body: JSON.stringify({
-            position_ms,
-            uris: [playlist.tracks[position].uri],
-          }),
-          headers: {
-            Authorization: `Bearer ${session.accessToken}`,
-          },
-        }
-      ).catch((error) => {
+      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          position_ms,
+          uris: [playlist.tracks[position].uri],
+        }),
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+      }).catch(error => {
         console.error('>>> Failed to play track <<<', error);
       });
     },
-    [device, playlist, session]
+    [device, playlist, session],
   );
   const setPosition = useCallback(
     (position_ms: number) => {
-      if (!device || !playlist || !session) return;
-      let position = playlist.tracks.findIndex((track) =>
-        ['playing', 'queued'].includes(track.state)
+      if (!playlist) return;
+      let position = playlist.tracks.findIndex(track =>
+        ['playing', 'queued'].includes(track.state),
       );
-      if (position === -1) position = 0;
-      playTrack(position, position_ms);
+      playTrack(Math.max(position, 0), position_ms);
     },
-    [device, playlist, session, playTrack]
+    [playlist, playTrack],
   );
   const togglePlay = useCallback(() => {
     if (playbackState && player) {
@@ -61,13 +57,13 @@ const Playlist = () => {
     } else if (playlist) setPosition(playlist.position);
   }, [playbackState, player, playlist, setPosition]);
   useEffect(() => {
-    if (!playbackState || !playlist) return;
+    if (!playbackState) return;
     const name = playbackState.track_window.current_track.name;
     const artist = playbackState.track_window.current_track.artists[0].name;
-    mutatePlaylist((playlist) => {
+    mutatePlaylist(playlist => {
       if (!playlist) return playlist;
       const playing = playlist.tracks.findIndex(
-        (track) => track.name === name && track.artist === artist
+        track => track.name === name && track.artist === artist,
       );
       if (playing === -1) return;
       if (playlist.tracks[playing].state === 'playing') {
@@ -94,14 +90,14 @@ const Playlist = () => {
         }),
       };
     }, false);
-  }, [mutatePlaylist, playbackState, playlist, playTrack]);
+  }, [mutatePlaylist, playbackState, playTrack]);
   if (error) {
     console.error('>>> Failed to load playlist <<<', error);
     return <>Failed to load playlist</>;
   } else if (!session) return <>Loading session...</>;
   else if (!player || !device) return <>Initialising player...</>;
   else if (!playlist) return <>Loading playlist...</>;
-  const queue = playlist.tracks.filter((track) => track.state !== 'played');
+  const queue = playlist.tracks.filter(track => track.state !== 'played');
   let position = playlist.position;
   if (playbackState && playbackState.position !== 0) {
     position = playbackState.position;

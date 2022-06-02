@@ -33,9 +33,7 @@ export const ErrorProvider: React.FC = ({ children }) => {
       player.removeListener('playback_error', playback);
     };
   }, [player]);
-  return (
-    <ErrorContext.Provider value={error}>{children}</ErrorContext.Provider>
-  );
+  return <ErrorContext.Provider value={error}>{children}</ErrorContext.Provider>;
 };
 
 export function useError() {

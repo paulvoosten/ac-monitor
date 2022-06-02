@@ -26,9 +26,7 @@ export const DeviceProvider: React.FC = ({ children }) => {
       player.removeListener('not_ready', notReady);
     };
   }, [player]);
-  return (
-    <DeviceContext.Provider value={device}>{children}</DeviceContext.Provider>
-  );
+  return <DeviceContext.Provider value={device}>{children}</DeviceContext.Provider>;
 };
 
 export function useDevice() {

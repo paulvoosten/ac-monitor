@@ -15,7 +15,7 @@ const ProgressBar = ({
       type="range"
       max={max}
       value={value}
-      onChange={(e) => {
+      onChange={e => {
         onClick(Number(e.target.value));
       }}
     />

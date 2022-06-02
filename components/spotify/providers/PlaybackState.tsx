@@ -1,13 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { usePlayer } from './Player';
 
-const PlaybackStateContext = createContext<
-  Spotify.PlaybackState | null | undefined
->(undefined);
+const PlaybackStateContext = createContext<Spotify.PlaybackState | null | undefined>(undefined);
 
 export const PlaybackStateProvider: React.FC = ({ children }) => {
-  const [playbackState, setPlaybackState] =
-    useState<Spotify.PlaybackState | null>(null);
+  const [playbackState, setPlaybackState] = useState<Spotify.PlaybackState | null>(null);
   const player = usePlayer();
   useEffect(() => {
     if (!player) return;
@@ -15,13 +12,10 @@ export const PlaybackStateProvider: React.FC = ({ children }) => {
       setPlaybackState(state);
     };
     player.addListener('player_state_changed', playerStateChanged);
-    return () =>
-      player.removeListener('player_state_changed', playerStateChanged);
+    return () => player.removeListener('player_state_changed', playerStateChanged);
   }, [player]);
   return (
-    <PlaybackStateContext.Provider value={playbackState}>
-      {children}
-    </PlaybackStateContext.Provider>
+    <PlaybackStateContext.Provider value={playbackState}>{children}</PlaybackStateContext.Provider>
   );
 };
 
@@ -35,12 +29,7 @@ export function usePlaybackState(interval: false | number = false) {
   useEffect(() => setPlaybackState(value), [value]);
   const playbackStateIsNull = playbackState === null;
   useEffect(() => {
-    if (
-      interval === false ||
-      !player ||
-      playbackStateIsNull ||
-      playbackState.paused
-    ) {
+    if (interval === false || !player || playbackStateIsNull || playbackState.paused) {
       return;
     }
     const intervalId = window.setInterval(async () => {
