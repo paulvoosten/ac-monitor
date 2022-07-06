@@ -92,12 +92,11 @@ const Playlist = () => {
     }, false);
   }, [mutatePlaylist, playbackState, playTrack]);
   if (error) {
-    console.error('>>> Failed to load playlist <<<', error);
     return <>Failed to load playlist</>;
   } else if (!session) return <>Loading session...</>;
   else if (!player || !device) return <>Initialising player...</>;
   else if (!playlist) return <>Loading playlist...</>;
-  const queue = playlist.tracks.filter(track => track.state !== 'played').slice(0,10);
+  const queue = playlist.tracks.filter(track => track.state !== 'played');
   let position = playlist.position;
   if (playbackState && playbackState.position !== 0) {
     position = playbackState.position;
@@ -106,7 +105,7 @@ const Playlist = () => {
     <>
       <div className={styles.player}>
         <div className={styles.tracks}>
-          {queue.map((track, i) => {
+          {queue.slice(0,10).map((track, i) => {
             const isCurrent = i === 0;
             const queued = i + playlist.tracks.length - queue.length;
             return (
