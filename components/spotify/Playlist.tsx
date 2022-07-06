@@ -97,7 +97,7 @@ const Playlist = () => {
   } else if (!session) return <>Loading session...</>;
   else if (!player || !device) return <>Initialising player...</>;
   else if (!playlist) return <>Loading playlist...</>;
-  const queue = playlist.tracks.filter(track => track.state !== 'played');
+  const queue = playlist.tracks.filter(track => track.state !== 'played').slice(0,10);
   let position = playlist.position;
   if (playbackState && playbackState.position !== 0) {
     position = playbackState.position;
