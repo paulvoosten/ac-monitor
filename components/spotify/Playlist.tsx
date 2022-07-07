@@ -96,7 +96,9 @@ const Playlist = () => {
   } else if (!session) return <>Loading session...</>;
   else if (!player || !device) return <>Initialising player...</>;
   else if (!playlist) return <>Loading playlist...</>;
+  const totalLength = playlist.tracks.length;
   const queue = playlist.tracks.filter(track => track.state !== 'played');
+  const currentSongNumber = totalLength - queue.length;
   let position = playlist.position;
   if (playbackState && playbackState.position !== 0) {
     position = playbackState.position;
@@ -122,6 +124,7 @@ const Playlist = () => {
           })}
         </div>
       </div>
+      <div className={styles.total}>{currentSongNumber} / {totalLength}</div>
     </>
   );
 };
