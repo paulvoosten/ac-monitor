@@ -92,6 +92,7 @@ const Playlist = () => {
     }, false);
   }, [mutatePlaylist, playbackState, playTrack]);
   if (error) {
+    console.error('>>> Failed to load playlist <<<', error);
     return <>Failed to load playlist</>;
   } else if (!session) return <>Loading session...</>;
   else if (!player || !device) return <>Initialising player...</>;
