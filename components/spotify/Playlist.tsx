@@ -99,7 +99,7 @@ const Playlist = () => {
   else if (!playlist) return <>Loading playlist...</>;
   const totalLength = playlist.tracks.length;
   const queue = playlist.tracks.filter(track => track.state !== 'played');
-  const currentSongNumber = totalLength - queue.length;
+  const currentSongNumber = totalLength - queue.length + 1;
   let position = playlist.position;
   if (playbackState && playbackState.position !== 0) {
     position = playbackState.position;
