@@ -1,15 +1,14 @@
-import type { NextPage } from 'next';
 import fs from 'fs';
 import Head from 'next/head';
 import styles from '../styles/Memes.module.css';
 import getPath from '../helpers/file';
-import { LegacyRef, useCallback, useEffect, useRef, useState } from 'react';
+import { LegacyRef, useEffect, useRef, useState } from 'react';
 
-const Board: NextPage = ({
+export default function Board({
   files,
 }: {
   files: Array<{ name: string; source: string; type: string }>;
-}) => {
+}) {
   const audioRef: LegacyRef<HTMLAudioElement> = useRef(null);
   const [queue, setQueue] = useState<Array<{ name: string; source: string; type: string }>>([]);
   useEffect(() => {
@@ -77,9 +76,7 @@ const Board: NextPage = ({
       </div>
     </div>
   );
-};
-
-export default Board;
+}
 
 export async function getStaticProps() {
   const filetype = 'wav';

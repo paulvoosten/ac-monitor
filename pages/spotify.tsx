@@ -1,4 +1,3 @@
-import type { NextPage } from 'next';
 import React, { useCallback, useEffect, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { SDKProvider } from '../components/spotify/providers/SDK';
@@ -10,7 +9,7 @@ import { PlaylistProvider } from '../components/spotify/providers/Playlist';
 
 export const INITIAL_VOLUME = 50;
 
-const Spotify: NextPage = () => {
+export default function Spotify() {
   const [playlistId, setPlaylistId] = useState('6cdEgnaFIU4dIPGeB4bM5v');
   const { data: session, status } = useSession<true>({
     required: true,
@@ -50,6 +49,4 @@ const Spotify: NextPage = () => {
       </SDKProvider>
     </SWRConfig>
   );
-};
-
-export default Spotify;
+}

@@ -10,31 +10,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import ProgressBar from '../ProgressBar';
 import { usePlayer } from './providers/Player';
-import { useCallback, useState } from 'react';
-import { useDevice } from './providers/Device';
+import { useState } from 'react';
 import Playlists from './Playlists';
 import { INITIAL_VOLUME } from '../../pages/spotify';
-import { usePlaylist } from './providers/Playlist';
+import { QUEUE_SIZE, usePlaylist } from './providers/Playlist';
 
 const Menu = ({ setPlaylistId }: { setPlaylistId: (playlistId: string) => void }) => {
   const [volume, setVolume] = useState(INITIAL_VOLUME);
-  const device = useDevice();
   const player = usePlayer();
-  const { mutate: mutatePlaylist } = usePlaylist();
+  const { mutate: mutatePlaylist, playTrack } = usePlaylist();
   const { data: session } = useSession();
-  const startNewQueue = useCallback(() => {
-    if (!device || !session?.accessToken) return;
-    mutatePlaylist().then(playlist => {
-      if (!playlist) return;
-      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device.id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ uris: [playlist.tracks[0].uri] }),
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-        },
-      });
-    });
-  }, [device, mutatePlaylist, session?.accessToken]);
   if (!session) return null;
   return (
     <ToggleMenu>
@@ -44,7 +29,16 @@ const Menu = ({ setPlaylistId }: { setPlaylistId: (playlistId: string) => void }
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
           Logout
         </span>
-        <span onClick={startNewQueue}>
+        <span
+          onClick={() => {
+            mutatePlaylist().then(playlist => {
+              playTrack(
+                playlist!.tracks.slice(0, QUEUE_SIZE).map(track => track.uri),
+                0,
+              );
+            });
+          }}
+        >
           <FontAwesomeIcon icon={faShuffle} />
           Shuffle
         </span>
