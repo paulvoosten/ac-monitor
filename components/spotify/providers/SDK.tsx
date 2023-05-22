@@ -10,9 +10,9 @@ export const SDKProvider: React.FC<{
   getOAuthToken: Spotify.PlayerInit['getOAuthToken'];
   name: Spotify.PlayerInit['name'];
   volume: Spotify.PlayerInit['volume'];
-  connectOnInit?: boolean;
-}> = ({ children, getOAuthToken, name, volume, connectOnInit = true }) => {
+}> = ({ children, getOAuthToken, name, volume }) => {
   const [ready, setReady] = useState(false);
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://sdk.scdn.co/spotify-player.js';
@@ -22,14 +22,10 @@ export const SDKProvider: React.FC<{
       document.body.removeChild(script);
     };
   }, []);
+
   return (
     <SDKContext.Provider value={ready}>
-      <PlayerProvider
-        getOAuthToken={getOAuthToken}
-        name={name}
-        volume={volume}
-        connectOnInit={connectOnInit}
-      >
+      <PlayerProvider getOAuthToken={getOAuthToken} name={name} volume={volume}>
         <DeviceProvider>
           <PlaybackStateProvider>
             <ErrorProvider>{children}</ErrorProvider>
