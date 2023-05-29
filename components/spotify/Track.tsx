@@ -4,40 +4,44 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import Track from '../../interfaces/Track';
 import ProgressBar from '../ProgressBar';
+import { usePlayer } from './providers/Player';
+import { usePlaybackState } from './providers/PlaybackState';
+import { useCallback } from 'react';
+import { usePlaylist } from './providers/Playlist';
 
-function formatTime(ms: number) {
-  const s = Math.floor(ms / 1000);
-  const minutes = Math.floor(s / 60);
-  const seconds = Math.floor(s % 60);
-  const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-  return `${minutes}:${returnedSeconds}`;
+interface Props {
+  track: Track;
+  isCurrent: boolean;
+  playlistIndex: number;
 }
 
-const Track = ({
-  isCurrent,
-  paused,
-  position,
-  setPosition,
-  togglePlay,
-  track,
-}: {
-  isCurrent: boolean;
-  paused: boolean;
-  position: number;
-  setPosition: (position: number) => void;
-  togglePlay: () => void;
-  track: Track;
-}) => {
+const Track = ({ track, isCurrent, playlistIndex }: Props) => {
+  const player = usePlayer();
+  const playbackState = usePlaybackState(false);
+  const { data: playlist, playTrack, setPosition } = usePlaylist();
+
+  const togglePlay = useCallback(() => {
+    if (playbackState && player) player.togglePlay();
+    else if (playlist) setPosition(playlist.position);
+  }, [playbackState, player, playlist, setPosition]);
+
+  if (!playlist) return null;
+
+  const position = playbackState?.position ?? playlist.position ?? 0;
+  const paused = playbackState?.paused ?? true;
   return (
     <div key={track.uri} className={styles.track}>
       <div className={styles.image}>
-        <img
+        <Image
           alt={track.name}
           src={track.image}
           width={isCurrent ? 84 : 50}
           height={isCurrent ? 84 : 50}
         />
-        <FontAwesomeIcon icon={!isCurrent || paused ? faPlay : faPause} onClick={togglePlay} />
+        <FontAwesomeIcon
+          icon={!isCurrent || paused ? faPlay : faPause}
+          onClick={isCurrent ? togglePlay : () => playTrack(playlistIndex, 0)}
+        />
       </div>
       <div className={styles.info}>
         <div className={styles.nameArtist}>
@@ -55,5 +59,13 @@ const Track = ({
     </div>
   );
 };
+
+function formatTime(ms: number) {
+  const s = Math.floor(ms / 1000);
+  const minutes = Math.floor(s / 60);
+  const seconds = Math.floor(s % 60);
+  const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+  return `${minutes}:${returnedSeconds}`;
+}
 
 export default Track;

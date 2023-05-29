@@ -13,7 +13,7 @@ import { usePlayer } from './providers/Player';
 import { useState } from 'react';
 import Playlists from './Playlists';
 import { INITIAL_VOLUME } from '../../pages/spotify';
-import { QUEUE_SIZE, usePlaylist } from './providers/Playlist';
+import { usePlaylist } from './providers/Playlist';
 
 const Menu = ({ setPlaylistId }: { setPlaylistId: (playlistId: string) => void }) => {
   const [volume, setVolume] = useState(INITIAL_VOLUME);
@@ -29,16 +29,7 @@ const Menu = ({ setPlaylistId }: { setPlaylistId: (playlistId: string) => void }
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
           Logout
         </span>
-        <span
-          onClick={() => {
-            mutatePlaylist().then(playlist => {
-              playTrack(
-                playlist!.tracks.slice(0, QUEUE_SIZE).map(track => track.uri),
-                0,
-              );
-            });
-          }}
-        >
+        <span onClick={() => mutatePlaylist().then(playlist => playTrack(0, 0, playlist))}>
           <FontAwesomeIcon icon={faShuffle} />
           Shuffle
         </span>
