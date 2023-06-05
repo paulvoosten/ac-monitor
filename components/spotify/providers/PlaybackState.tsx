@@ -14,8 +14,6 @@ export const PlaybackStateProvider: React.FC = ({ children }) => {
       setPlaybackState(state);
     }, 100);
 
-    // player.addListener('player_state_changed', playerStateChanged);
-    // return () => player.removeListener('player_state_changed', playerStateChanged);
     return () => clearInterval(intervalId);
   }, [player]);
   return (
@@ -23,7 +21,7 @@ export const PlaybackStateProvider: React.FC = ({ children }) => {
   );
 };
 
-export function usePlaybackState(interval: false | number = false) {
+export function usePlaybackState() {
   const value = useContext(PlaybackStateContext);
   if (value === undefined) {
     throw new Error('PlaybackStateContext not available');

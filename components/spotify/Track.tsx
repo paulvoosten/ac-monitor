@@ -17,15 +17,15 @@ interface Props {
 
 const Track = ({ track, isCurrent, playlistIndex }: Props) => {
   const player = usePlayer();
-  const playbackState = usePlaybackState(false);
-  const { data: playlist, playTrack, setPosition } = usePlaylist();
+  const playbackState = usePlaybackState();
+  const { data: playlist, playTrack } = usePlaylist();
 
   const togglePlay = useCallback(() => {
     if (playbackState && player) player.togglePlay();
-    else if (playlist) setPosition(playlist.position);
-  }, [playbackState, player, playlist, setPosition]);
+    else if (playlist) playTrack(playlist.playingTrack, playlist.position);
+  }, [playbackState, player, playlist, playTrack]);
 
-  if (!playlist) return null;
+  if (!player || !playlist) return null;
 
   const position = playbackState?.position ?? playlist.position ?? 0;
   const paused = playbackState?.paused ?? true;
@@ -51,7 +51,11 @@ const Track = ({ track, isCurrent, playlistIndex }: Props) => {
         {isCurrent && (
           <div className={styles.progressWrapper}>
             <div className={`${styles.time} ${styles.pre}`}>{formatTime(position)}</div>
-            <ProgressBar value={position} max={track.duration} onClick={setPosition} />
+            <ProgressBar
+              value={position}
+              max={track.duration}
+              onClick={async position => await player.seek(position)}
+            />
             <div className={`${styles.time} ${styles.post}`}>{formatTime(track.duration)}</div>
           </div>
         )}

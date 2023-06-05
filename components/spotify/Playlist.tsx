@@ -26,16 +26,14 @@ const Playlist = () => {
     <>
       <div className={styles.player}>
         <div className={styles.tracks}>
-          {queue.slice(0, 10).map((track, i) => {
-            return (
-              <Track
-                key={track.uri}
-                track={track}
-                isCurrent={i === 0}
-                playlistIndex={i + totalLength - queue.length}
-              />
-            );
-          })}
+          {queue.slice(0, 10).map((track, i) => (
+            <Track
+              key={track.uri}
+              track={track}
+              isCurrent={i === 0}
+              playlistIndex={i + totalLength - queue.length}
+            />
+          ))}
         </div>
       </div>
       <div className={styles.total}>
