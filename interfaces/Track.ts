@@ -4,6 +4,5 @@ export default interface Track {
   duration: number;
   image: string;
   name: string;
-  state: 'played' | 'playing' | 'queued';
   uri: string;
 }

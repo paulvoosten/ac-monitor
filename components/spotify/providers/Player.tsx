@@ -7,12 +7,12 @@ export const PlayerProvider: React.FC<{
   getOAuthToken: Spotify.PlayerInit['getOAuthToken'];
   name: Spotify.PlayerInit['name'];
   volume?: Spotify.PlayerInit['volume'];
-  connectOnInit: boolean;
-}> = ({ children, getOAuthToken, name, volume, connectOnInit }) => {
+}> = ({ children, getOAuthToken, name, volume }) => {
   const [player, setPlayer] = useState<Spotify.Player | null>(null);
   const sdkReady = useSDK();
   const getOAuthTokenRef = useRef(getOAuthToken);
   getOAuthTokenRef.current = getOAuthToken;
+
   useEffect(() => {
     if (sdkReady) {
       const player = new Spotify.Player({
@@ -21,10 +21,11 @@ export const PlayerProvider: React.FC<{
         volume,
       });
       setPlayer(player);
-      if (connectOnInit) player.connect();
+      player.connect();
       return () => player.disconnect();
     }
-  }, [connectOnInit, sdkReady]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sdkReady]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return <PlayerContext.Provider value={player}>{children}</PlayerContext.Provider>;
 };
 

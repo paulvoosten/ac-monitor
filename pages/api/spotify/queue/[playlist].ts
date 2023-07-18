@@ -34,6 +34,7 @@ async function getPlaylist(token: string, playlistId: string) {
     image: playlist.images[0].url,
     name: playlist.name,
     position: 0,
+    playingTrack: 0,
     tracks: tracks.map(formatTrack),
   };
 }
@@ -60,7 +61,6 @@ function formatTrack(track: SpotifyApi.PlaylistTrackObject) {
     duration: track.track.duration_ms,
     image: track.track.album.images[0].url,
     name: track.track.name,
-    state: 'queued',
     uri: track.track.uri,
   };
 }

@@ -5,5 +5,6 @@ export default interface Playlist {
   image: string;
   name: string;
   position: number;
+  playingTrack: number;
   tracks: Track[];
 }

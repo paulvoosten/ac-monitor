@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRightFromBracket,
   faShuffle,
+  faRedo,
   faVolumeHigh,
   faVolumeLow,
 } from '@fortawesome/free-solid-svg-icons';
@@ -13,12 +14,12 @@ import { usePlayer } from './providers/Player';
 import { useState } from 'react';
 import Playlists from './Playlists';
 import { INITIAL_VOLUME } from '../../pages/spotify';
-import { QUEUE_SIZE, usePlaylist } from './providers/Playlist';
+import { shuffle, usePlaylist } from './providers/Playlist';
 
 const Menu = ({ setPlaylistId }: { setPlaylistId: (playlistId: string) => void }) => {
   const [volume, setVolume] = useState(INITIAL_VOLUME);
   const player = usePlayer();
-  const { mutate: mutatePlaylist, playTrack } = usePlaylist();
+  const { data: playlist, mutate: mutatePlaylist, playTrack } = usePlaylist();
   const { data: session } = useSession();
   if (!session) return null;
   return (
@@ -29,19 +30,20 @@ const Menu = ({ setPlaylistId }: { setPlaylistId: (playlistId: string) => void }
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
           Logout
         </span>
-        <span
-          onClick={() => {
-            mutatePlaylist().then(playlist => {
-              playTrack(
-                playlist!.tracks.slice(0, QUEUE_SIZE).map(track => track.uri),
-                0,
-              );
-            });
-          }}
-        >
-          <FontAwesomeIcon icon={faShuffle} />
-          Shuffle
+        <span onClick={() => playTrack(0, 0)}>
+          <FontAwesomeIcon icon={faRedo} />
+          Restart
         </span>
+        {playlist && (
+          <span
+            onClick={() =>
+              mutatePlaylist(shuffle(playlist), false).then(playlist => playTrack(0, 0, playlist))
+            }
+          >
+            <FontAwesomeIcon icon={faShuffle} />
+            Shuffle
+          </span>
+        )}
       </div>
       {player && (
         <div className={styles.volume}>
